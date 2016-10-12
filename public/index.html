@@ -1,0 +1,44 @@
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+</head>
+
+<body ng-app="InboxApp" ng-cloak>
+    <div ng-controller="inboxCtrl" layout="column" flex layout-fill ng-cloak>
+        <md-toolbar md-scroll-shrink>
+            <div class="md-toolbar-tools">
+                <span>My Messages</span>
+                <span flex></span>
+                <div ng-show="!initialized"><span id="signInButton"></span></div>
+                <span ng-cloak>{{name.givenName}}</span>
+            </div>
+        </md-toolbar>
+        <md-list>
+            <md-list-item class="md-3-line" ng-repeat="message in messages">
+                <div class="md-list-item-text">
+                    <h3>{{message.subject}}</h3>
+                    <p>
+                        {{message.body}}
+                    </p>
+                </div>
+                <md-divider inset></md-divider>
+            </md-list-item>
+        </md-list>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+    <script src="js/app.init.js"></script>
+    <script src="js/app.global.js"></script>
+    <script src="js/services/constantService.js"></script>
+    <script src="js/services/googleApiService.js"></script>
+    <script src="js/controllers/inboxCtrl.js"></script>
+    <script src="https://apis.google.com/js/client:plusone.js?onload=OnLoadCallback"></script>
+</body>
+
+</html>
