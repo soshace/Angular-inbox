@@ -18,12 +18,13 @@ angular.module('InboxApp').service('googleApiService', ['ConstantService', funct
     };
 
     this.checkAuth = function(callback) {
+        var self = this;
         gapi.auth.authorize({
             client_id: constants.clientId,
             immediate: true,
             scope: 'https://www.googleapis.com/auth/plus.login'
         }, function(auth) {
-            callback(!!auth.access_token);
+            callback(auth.access_token);
         });
     };
 
@@ -35,31 +36,37 @@ angular.module('InboxApp').service('googleApiService', ['ConstantService', funct
         });
     };
 
-    this.getMessageList = function(callback) {
+    this.getMessageList = function(pageToken, callback) {
         var self = this;
+        var pageTokenParam = pageToken ? '&pageToken=' + pageToken : '';
         gapi.client.request({
-            path: '/gmail/v1/users/me/messages?labelIds=INBOX&maxResults=100&key=' + self.accessToken,
+            path: '/gmail/v1/users/me/messages?labelIds=INBOX&labelIds=CATEGORY_UPDATES&maxResults=10&key=' + self.accessToken + pageTokenParam,
             method: 'GET',
             callback: callback
         })
     };
 
-    this.getMessage = function(messageId, callback) {
+    this.getMessages = function(messageIds, callback) {
         var self = this;
-        gapi.client.request({
+        var batch = gapi.client.newBatch();
+        var result = [];
+
+        messageIds.map(messageId => batch.add(gapi.client.request({
             path: '/gmail/v1/users/me/messages/' + messageId + '?key=' + self.accessToken,
-            method: 'GET',
-            callback: function(message) {
-                if (!message.error) {
-                	var body = message.payload.parts ? message.payload.parts[0].body.data : message.payload.body.data;
-                    callback({
-                        body: body ? decodeURIComponent(escape(atob(body.replace(/-/g, '+').replace(/_/g, '/')))) : '',
-                        subject: message.snippet
-                    });
-                } else {
-                    callback({ error: true });
-                }
+            method: 'GET'
+        })));
+
+        batch.then(function(batchResult) {
+            for (var i in batchResult.result) {
+                var message = batchResult.result[i].result;
+                var body = message.payload.parts ? message.payload.parts[0].body.data : message.payload.body.data;
+                result.push({
+                    body: body ? decodeURIComponent(escape(atob(body.replace(/-/g, '+').replace(/_/g, '/')))) : '',
+                    subject: message.payload.headers.filter(header => header.name === 'Subject').pop().value
+                });
             }
-        })
+
+            callback(result);
+        });
     };
 }]);
