@@ -15,4 +15,6 @@ gulp.task('build-minify', function() {
         .pipe(gulp.dest('dist'));
 });
 
-gulp.start('build-minify');
+gulp.start('build-minify', function() {
+	console.log('Build is successfull!');
+});
