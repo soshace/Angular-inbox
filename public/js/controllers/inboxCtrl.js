@@ -1,5 +1,9 @@
 angular.module('InboxApp').controller('inboxCtrl', ['$scope', 'googleApiService', 'ConstantService', function($scope, googleApi, constants) {
+    var nextPageToken = '';
+    var loading = false;
+
     function init() {
+        loading = true;
         googleApi.checkAuth(function(authToken) {
             if (!authToken) {
                 googleApi.renderAuthButton(constants.signInButtonId, function() {
@@ -26,22 +30,36 @@ angular.module('InboxApp').controller('inboxCtrl', ['$scope', 'googleApiService'
         googleApi.getUserInfo(function(user) {
             $scope.$apply(function() {
                 $scope.name = user.name;
-                $scope.loadBunchOfMessages($scope.nextPageToken);
             });
+            $scope.loadBunchOfMessages(true);
         });
     }
 
-    $scope.loadBunchOfMessages = function(nextPage) {
-        googleApi.getMessageList(nextPage, function(result) {
-            var list = result.messages;
-            $scope.nextPageToken = result.nextPageToken;
+    $scope.loadBunchOfMessages = function(initial) {
+        if ((nextPageToken && !loading) || initial) {
+            loading = true;
+            $scope.$apply(function() {
+                $scope.messageLoading = !initial && loading;
+            });
 
-            googleApi.getMessages(list.map(el => el.id), function(messages) {
-                $scope.$apply(function() {
-                    messages.map(message => $scope.messages.push(message));
-                });
+            googleApi.getMessageList(nextPageToken, function(result) {
+                var list = result.messages;
+                nextPageToken = result.nextPageToken;
+
+                googleApi.getMessages(list.map(el => el.id), function(messages) {
+                    $scope.$apply(function() {
+                        $scope.messages.push.apply($scope.messages, messages);
+
+                        loading = false;
+                        $scope.messageLoading = false;
+                    });
+                })
             })
-        })
+        }
+    };
+
+    $scope.toggleMessage = function(message) {
+        message.opened = !message.opened;
     };
 
     $scope.startInit = function() {
@@ -49,6 +67,5 @@ angular.module('InboxApp').controller('inboxCtrl', ['$scope', 'googleApiService'
     };
 
     $scope.init = false;
-    $scope.nextPageToken = '';
     $scope.messages = [];
 }]);

@@ -1,4 +1,4 @@
-<html lang="en">
+<html lang="en" ng-app="InboxApp" ng-controller="inboxCtrl">
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,9 +8,9 @@
     <!-- endbuild -->
 </head>
 
-<body ng-app="InboxApp" ng-cloak>
-    <div ng-controller="inboxCtrl" layout="column" flex layout-fill ng-cloak>
-        <md-toolbar md-scroll-shrink>
+<body ng-cloak bottom-scroll load-handler="loadBunchOfMessages">
+    <div layout="column" flex layout-fill ng-cloak>
+        <md-toolbar md-scroll-shrink class="fixedToolbar">
             <div class="md-toolbar-tools">
                 <span>My Messages</span>
                 <span flex></span>
@@ -18,15 +18,15 @@
                 <span ng-cloak>{{name.givenName}}</span>
             </div>
         </md-toolbar>
-        <div layout="row" layout-padding layout-wrap layout-fill layout-align="center">
-            <md-whiteframe class="md-whiteframe-4dp" flex-sm="75" flex-gt-sm="80" flex-gt-md="80" ng-repeat="message in messages" style="margin-bottom: 15px;">
+        <div layout="row" layout-padding layout-wrap layout-fill layout-align="center" class="contentMargin">
+            <md-whiteframe class="md-whiteframe-4dp" flex-sm="75" flex-gt-sm="80" flex-gt-md="80" ng-repeat="message in messages" style="margin-bottom: 15px;" ng-click="toggleMessage(message)">
                 <h4>{{message.subject}}</h4>
-                <p class="paragraphEllipsis">
+                <p class="paragraphEllipsis" ng-class="{'expandedParagraph': message.opened}">
                     {{message.body}}
                 </p>
             </md-whiteframe>
-            <div flex-sm="75" flex-gt-sm="80" flex-gt-md="80" layout-align="center" ng-if="nextPageToken" style="text-align: center;">
-                <md-button class="md-primary" target="_blank" ng-click="loadBunchOfMessages(nextPageToken)">See more...</md-button>
+            <div flex-sm="75" flex-gt-sm="80" flex-gt-md="80" layout-align="center center" ng-if="messageLoading" style="text-align: center;">
+                <md-progress-circular md-mode="indeterminate" style="display: inline-block;"></md-progress-circular><br />Loading messages...
             </div>
         </div>
     </div>
@@ -41,6 +41,7 @@
     <script src="js/app.global.js"></script>
     <script src="js/services/constantService.js"></script>
     <script src="js/services/googleApiService.js"></script>
+    <script src="js/directives/bottomScrollDirective.js"></script>
     <script src="js/controllers/inboxCtrl.js"></script>
     <!-- endbuild -->
     <script src="https://apis.google.com/js/client:plusone.js?onload=OnLoadCallback"></script>

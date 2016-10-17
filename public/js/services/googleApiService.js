@@ -40,7 +40,7 @@ angular.module('InboxApp').service('googleApiService', ['ConstantService', funct
         var self = this;
         var pageTokenParam = pageToken ? '&pageToken=' + pageToken : '';
         gapi.client.request({
-            path: '/gmail/v1/users/me/messages?labelIds=INBOX&labelIds=CATEGORY_UPDATES&maxResults=10&key=' + self.accessToken + pageTokenParam,
+            path: '/gmail/v1/users/me/messages?labelIds=INBOX&labelIds=CATEGORY_UPDATES&maxResults=10' + pageTokenParam,
             method: 'GET',
             callback: callback
         })
