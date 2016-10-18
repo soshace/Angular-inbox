@@ -12,12 +12,12 @@ gulp.task('develop', function() {
 });
 
 gulp.task('build-minify', function() {
-    gulp.src('public/index.html')
+    gulp.src('./public/index.html')
         .pipe(useref())
         .pipe(gulpIf('*.js', babel({ presets: [es2015] })))
         .pipe(gulpIf('*.js', uglify()))
         .pipe(gulpIf('*.css', cssnano()))
-        .pipe(gulp.dest('dist'));
+        .pipe(gulp.dest('./dist'));
 });
 
 gulp.start(['develop', 'build-minify'], function() {
