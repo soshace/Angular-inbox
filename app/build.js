@@ -5,6 +5,11 @@ var uglify = require('gulp-uglify');
 var gulpIf = require('gulp-if');
 var babel = require('gulp-babel');
 var es2015 = require('babel-preset-es2015');
+var nodemon = require('gulp-nodemon');
+
+gulp.task('develop', function() {
+    nodemon({ script: './index', ext: 'js', legacyWatch: true });
+});
 
 gulp.task('build-minify', function() {
     gulp.src('public/index.html')
@@ -15,6 +20,6 @@ gulp.task('build-minify', function() {
         .pipe(gulp.dest('dist'));
 });
 
-gulp.start('build-minify', function() {
-	console.log('Build is successfull!');
+gulp.start(['develop', 'build-minify'], function() {
+    console.log('Build is successfull!');
 });
