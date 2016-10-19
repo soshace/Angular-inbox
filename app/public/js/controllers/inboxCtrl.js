@@ -4,26 +4,24 @@ angular.module('InboxApp').controller('inboxCtrl', ['$scope', 'googleApiService'
 
     function init() {
         loading = true;
-        googleApi.checkAuth(function(authToken) {
-            if (!authToken) {
-                googleApi.renderAuthButton(constants.signInButtonId, function() {
-                    googleApi.checkAuth(function(authToken) {
-                        if (authToken) {
-                            googleApi.accessToken = authToken;
-                            $scope.$apply(function() {
-                                $scope.init = true;
-                            });
-                            initPersonalData();
-                        }
+        if (!googleApi.accessToken) {
+            googleApi.renderAuthButton(constants.signInButtonId, function(authToken) {
+                if (authToken) {
+                    googleApi.accessToken = authToken;
+                    $scope.$apply(function() {
+                        $scope.init = true;
                     });
-                });
-            } else {
+                    initPersonalData();
+                }
+            });
+        } else {
+            googleApi.checkAuth(function() {
                 $scope.$apply(function() {
                     $scope.init = true;
                 });
                 initPersonalData();
-            }
-        });
+            });
+        }
     };
 
     function initPersonalData() {
@@ -57,6 +55,8 @@ angular.module('InboxApp').controller('inboxCtrl', ['$scope', 'googleApiService'
             })
         }
     };
+
+    $
 
     $scope.toggleMessage = function(message) {
         message.opened = !message.opened;

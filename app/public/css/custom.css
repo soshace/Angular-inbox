@@ -1,17 +1,10 @@
-.paragraphEllipsis {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 5 !important;
-    line-height: 1;
+.paragraph {
+    max-height: 100%;
     word-break: break-word;
-    max-height: 80%;
 }
 
 .expandedParagraph {
-	overflow: auto;
-	-webkit-line-clamp: 20 !important;
+    overflow: auto !important;
 }
 
 .fixedToolbar {
@@ -20,4 +13,57 @@
 
 .contentMargin {
     margin-top: 64px;
+}
+
+.shadowedBar {
+    box-shadow: 0 0 4px rgba(0, 0, 0, .14), 0 4px 8px rgba(0, 0, 0, .28);
+}
+
+.line-clamp {
+    display: block;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    position: relative;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 !important;
+}
+
+.line-clamp:after {
+    content: '...';
+    text-align: right;
+    bottom: 0;
+    right: 0;
+    width: 25%;
+    display: block;
+    position: absolute;
+    height: calc(1em * 1.2);
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 75%);
+}
+
+.line-clamp-5 {
+    height: calc(1em * 1.2 * 5);
+}
+
+.line-clamp-20 {
+    height: calc(1em * 1.2 * 20);
+}
+
+@supports (-webkit-line-clamp: 1) {
+    .line-clamp:after {
+        display: none !important;
+    }
+    .line-clamp-5 {
+        -webkit-line-clamp: 5;
+        height: auto;
+    }
+    .line-clamp-20 {
+        -webkit-line-clamp: 20;
+        height: auto;
+    }
+    .paragraph {
+        max-height: 40%;
+        word-break: break-word;
+    }
 }

@@ -10,7 +10,9 @@ angular.module('InboxApp').service('googleApiService', ['ConstantService', funct
 
     this.renderAuthButton = function(containerId, callback) {
         gapi.signin.render(containerId, {
-            callback: callback,
+            callback: function(auth) {
+                callback(auth.access_token);
+            },
             clientid: constants.clientId,
             scope: constants.scopeList.join(' '),
             cookiepolicy: constants.cookiePolicy
@@ -62,7 +64,8 @@ angular.module('InboxApp').service('googleApiService', ['ConstantService', funct
                 var body = message.payload.parts ? message.payload.parts[0].body.data : message.payload.body.data;
                 result.push({
                     body: body ? decodeURIComponent(escape(atob(body.replace(/-/g, '+').replace(/_/g, '/')))) : '',
-                    subject: message.payload.headers.filter(header => header.name === 'Subject').pop().value
+                    subject: message.payload.headers.filter(header => header.name === 'Subject').pop().value,
+                    author: message.payload.headers.filter(header => header.name === 'From').pop().value
                 });
             }
 

@@ -10,7 +10,7 @@
 
 <body ng-cloak bottom-scroll load-handler="loadBunchOfMessages">
     <div layout="column" flex layout-fill ng-cloak>
-        <md-toolbar md-scroll-shrink class="fixedToolbar">
+        <md-toolbar md-scroll-shrink class="fixedToolbar shadowedBar">
             <div class="md-toolbar-tools">
                 <span>My Messages</span>
                 <span flex></span>
@@ -21,7 +21,8 @@
         <div layout="row" layout-padding layout-wrap layout-fill layout-align="center" class="contentMargin">
             <md-whiteframe class="md-whiteframe-4dp" flex-sm="75" flex-gt-sm="80" flex-gt-md="80" ng-repeat="message in messages" style="margin-bottom: 15px;" ng-click="toggleMessage(message)">
                 <h4>{{message.subject}}</h4>
-                <p class="paragraphEllipsis" ng-class="{'expandedParagraph': message.opened}">
+                <h5>{{message.author}}</h5>
+                <p ng-if="message.body" class="paragraph" ng-class="{'expandedParagraph': message.opened, 'line-clamp-5': !message.opened, 'line-clamp-20': message.opened, 'line-clamp': !message.opened}">
                     {{message.body}}
                 </p>
             </md-whiteframe>
