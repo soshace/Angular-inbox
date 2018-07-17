@@ -14,3 +14,5 @@ Test task from Gwapit.
 1. **git clone** repository
 2. **docker-compose build**
 3. **docker-compose up**
+
+ We are looking forward to meeting you on our website *https://soshace.com*
